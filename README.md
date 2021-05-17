@@ -18,7 +18,8 @@ cd pytorch-CycleGAN-and-pix2pix
   - For Docker users, we provide the pre-built Docker image and Dockerfile. Please refer to our [Docker](docs/docker.md) page.
   - For Repl users, please click [![Run on Repl.it](https://repl.it/badge/github/junyanz/pytorch-CycleGAN-and-pix2pix)](https://repl.it/github/junyanz/pytorch-CycleGAN-and-pix2pix).
 
-
+### Dataset
+ dataset [template](data/template_dataset.py)
 ### pix2pix train/test
 - Download a pix2pix dataset (e.g.[UIEB]):
 ```bash
@@ -43,14 +44,6 @@ python test.py --dataroot ./datasets/facades --name facades_pix2pix --model pix2
 ```bash
 python test.py --dataroot ./datasets/facades/ --direction BtoA --model pix2pix --name facades_label2photo_pretrained
 ```
-
-## Custom Model and Dataset
-If you plan to implement custom models and dataset for your new applications, we provide a dataset [template](data/template_dataset.py) and a model [template](models/template_model.py) as a starting point.
-
-## [Code structure](docs/overview.md)
-To help users better understand and use our code, we briefly overview the functionality and implementation of each package and each module.
-
-## Pull Request
 
 ## Citation
 If you use this code for your research, 
