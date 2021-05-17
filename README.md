@@ -8,7 +8,7 @@
 
 - Clone this repo:
 ```bash
-git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+git clone https://github.com/dot9aitclass/pytorch-CycleGAN-and-pix2pix.git
 cd pytorch-CycleGAN-and-pix2pix
 ```
 
