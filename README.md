@@ -27,37 +27,37 @@ Create folder /path/to/data with subfolders A and B. A and B should each have th
 /path/to/data
 ├── A                   
 │   ├── Train
-|        |__1.jpg
-|        |__2.jpg
-|        |__3.jpg
-|        ...                    
+│   │       ├──1.jpg
+│   │       ├──2.jpg
+│   │       ├──3.jpg
+│   │        ...                    
 │   ├── Val
-|        |__500.jpg
-|        |__501.jpg
-|        |__502.jpg
-|        ...
+│   │       ├──500.jpg
+│   │       ├──501.jpg
+│   │       ├──502.jpg
+│   │       ...
 │   └── Test  
-|        |__792.jpg
-|        |__793.jpg
-|        |__794.jpg
-|        ...
-|── B
+│           ├──792.jpg
+│           ├──793.jpg
+│           ├──794.jpg
+│           ...
+├── B
 │   ├── Train
-|        |__1.jpg
-|        |__2.jpg
-|        |__3.jpg
-|        ...                    
+│   │       ├──1.jpg
+│   │       ├──2.jpg
+│   │       ├──3.jpg
+│   │       ...                    
 │   ├── Val
-|        |__500.jpg
-|        |__501.jpg
-|        |__502.jpg
-|        ...
+│   │       ├──500.jpg
+│   │       ├──501.jpg
+│   │       ├──502.jpg
+│   │       ...
 │   └── Test  
-|        |__792.jpg
-|        |__793.jpg
-|        |__794.jpg
-|        ...   
-|___
+│           ├──792.jpg
+│           ├──793.jpg
+│           ├──794.jpg
+│           ...   
+└──
 ```
 Corresponding images in a pair {A,B} must be the same size and have the same filename, e.g., /path/to/data/A/train/1.jpg is considered to correspond to /path/to/data/B/train/1.jpg.
 
