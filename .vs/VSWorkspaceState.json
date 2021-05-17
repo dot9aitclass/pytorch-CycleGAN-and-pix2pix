@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\data",
+    "\\models",
+    "\\res",
+    "\\res\\experiment_name",
+    "\\res\\experiment_name\\test_latest",
+    "\\util"
+  ],
+  "SelectedNode": "\\data\\single_dataset.py",
+  "PreviewInSolutionExplorer": false
+}

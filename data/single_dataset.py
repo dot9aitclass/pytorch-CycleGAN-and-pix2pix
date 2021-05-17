@@ -38,3 +38,8 @@ class SingleDataset(BaseDataset):
     def __len__(self):
         """Return the total number of images in the dataset."""
         return len(self.A_paths)
+    def get_size(self):
+        A_path = self.A_paths[0]
+        A_img = Image.open(A_path).convert('RGB')
+        A_size = A_img.size
+        return A_size

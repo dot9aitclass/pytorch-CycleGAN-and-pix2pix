@@ -32,38 +32,117 @@ from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
 from util import html
+from util import util
+import PIL
+import time
+from PIL import Image
+import cv2
+from data.base_dataset import BaseDataset, get_transform
 
+class livf():
+    def __init__(self):
+     self.transform = get_transform(opt, grayscale=0)
 
 if __name__ == '__main__':
     opt = TestOptions().parse()  # get test options
     # hard-code some parameters for test
+    modes=opt.lv
     opt.num_threads = 0   # test code only supports num_threads = 0
     opt.batch_size = 1    # test code only supports batch_size = 1
     opt.serial_batches = True  # disable data shuffling; comment this line if results on randomly chosen images are needed.
     opt.no_flip = True    # no flip; comment this line if results on flipped images are needed.
     opt.display_id = -1   # no visdom display; the test code saves the results to a HTML file.
-    dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
+    #dataset2 = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
+    dataset=livf()
+
+    #print(dataset2)
+    #for i , data in enumerate(dataset2):
+    #    print(i,data)
+    #    print(data['A'])
+    #    break
+    #im_siz=dataset.gsize()
     model = create_model(opt)      # create a model given opt.model and other options
     model.setup(opt)               # regular setup: load and print networks; create schedulers
     # create a website
-    web_dir = os.path.join(opt.results_dir, opt.name, '{}_{}'.format(opt.phase, opt.epoch))  # define the website directory
-    if opt.load_iter > 0:  # load_iter is 0 by default
-        web_dir = '{:s}_iter{:d}'.format(web_dir, opt.load_iter)
-    print('creating web directory', web_dir)
-    webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.epoch))
+    #web_dir = os.path.join(opt.results_dir, opt.name, '{}_{}'.format(opt.phase, opt.epoch))  # define the website directory
+    #if opt.load_iter > 0:  # load_iter is 0 by default
+    #    web_dir = '{:s}_iter{:d}'.format(web_dir, opt.load_iter)
+    #print('creating web directory', web_dir)
+    #webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.epoch))
     # test with eval mode. This only affects layers like batchnorm and dropout.
     # For [pix2pix]: we use batchnorm and dropout in the original pix2pix. You can experiment it with and without eval() mode.
     # For [CycleGAN]: It should not affect CycleGAN as CycleGAN uses instancenorm without dropout.
-    if opt.eval:
-        model.eval()
-    for i, data in enumerate(dataset):
-        if i >= opt.num_test:  # only apply our model to opt.num_test images.
+    #if opt.eval:
+    #    model.eval()
+    if modes=='live':
+        cap = cv2.VideoCapture(0) # says we capture an image from a webcam
+        while True:
+            _,frame = cap.read()
+            cv2.imshow("original",frame)
+            h,w=frame.shape[0],frame.shape[1]
+            cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+            pil_im = Image.fromarray(cv2_im)
+            pilim=dataset.transform(pil_im)
+            pilim.unsqueeze_(0)
+            #print(pilim.size())
+            #print(pilim)
+            pdict={'A':pilim,'A_paths':["./"]}
+            model.set_input_vid(pdict)  # unpack data from data loader
+            model.test()           # run inference
+            visuals = model.get_current_visuals()  # get image results
+            print(visuals.items())
+            for label, im_data in visuals.items():
+                im = util.tensor2im(im_data)
+                im=cv2.cvtColor(im,cv2.COLOR_RGB2BGR)
+                im=cv2.resize(im,(w,h))
+                cv2.imshow("enhanced",im)
+                k=cv2.waitKey(5)
+                if k==27:
+                    break
+            if k==27:
+                break
+        cv2.destroyAllWindows()
+    else:
+        cap = cv2.VideoCapture(opt.lv)
+        if (cap.isOpened()== False):
+          print("Error opening video stream or file")
+        while(cap.isOpened()):
+          ret, frame = cap.read()
+          if ret == True:
+            h,w=frame.shape[0]//2,frame.shape[1]//2
+            frame=cv2.resize(frame,(w,h))
+            cv2.imshow('original',frame)
+            cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+            pil_im = Image.fromarray(cv2_im)
+            pilim=dataset.transform(pil_im)
+            pilim.unsqueeze_(0)
+            pdict={'A':pilim,'A_paths':["./"]}
+            model.set_input_vid(pdict)  # unpack data from data loader
+            model.test()# run inference
+            visuals = model.get_current_visuals()  # get image results
+            for label, im_data in visuals.items():
+                im = util.tensor2im(im_data)
+                im=cv2.cvtColor(im,cv2.COLOR_RGB2BGR)
+                im=cv2.resize(im,(w,h))
+                cv2.imshow("enhanced",im)
+                k=cv2.waitKey(5)
+                if k==27:
+                    break
+            if k==27:
+                break
+          else:
             break
-        model.set_input(data)  # unpack data from data loader
-        model.test()           # run inference
-        visuals = model.get_current_visuals()  # get image results
-        img_path = model.get_image_paths()     # get image paths
-        if i % 5 == 0:  # save images to an HTML file
-            print('processing (%04d)-th image... %s' % (i, img_path))
-        save_images(webpage, visuals, img_path, aspect_ratio=opt.aspect_ratio, width=opt.display_winsize)
-    webpage.save()  # save the HTML
+        cap.release()
+        cv2.destroyAllWindows()
+
+
+    #    #img_path = model.get_image_paths()     # get image paths
+    #    if i % 1 == 0:  # save images to an html file
+    #        print('processing (%04d)-th image... %s' % (i, img_path))
+    #    og_width,og_height=im_siz
+    #    save_images(webpage, visuals, img_path, aspect_ratio=float(og_height/og_width), width=og_width)
+    #webpage.save()  # save the HTML
+    #cap = cv2.VideoCapture(0) # says we capture an image from a webcam
+    #_,cv2_im = cap.read()
+    #cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
+    #pil_im = Image.fromarray(cv2_im)
