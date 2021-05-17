@@ -73,7 +73,7 @@ This will combine each pair of images (A,B) into a single image file, ready for 
 - Train a model:
 ```bash
 #!./scripts/train_pix2pix.sh
-python train.py --dataroot ./datasets/facades --name facades_pix2pix --model pix2pix --direction BtoA
+python train.py --dataroot ./datasets/path.to/data --name uieb_pix2pix --model pix2pix --direction AtoB
 ```
 To see more intermediate results, check out  `./checkpoints/facades_pix2pix/web/index.html`.
 
