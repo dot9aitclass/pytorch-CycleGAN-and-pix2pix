@@ -19,12 +19,56 @@ cd pytorch-CycleGAN-and-pix2pix
   - For Repl users, please click [![Run on Repl.it](https://repl.it/badge/github/junyanz/pytorch-CycleGAN-and-pix2pix)](https://repl.it/github/junyanz/pytorch-CycleGAN-and-pix2pix).
 
 ### Dataset
- dataset [template](data/template_dataset.py)
-### pix2pix train/test
-- Download a pix2pix dataset (e.g.[UIEB]):
+dataset [template](data/template_dataset.py)
+A python script is provided to generate pix2pix training data in the form of pairs of images {A,B}, where A and B are two different depictions of the same underlying scene. For example, these might be pairs {label map, photo} or {bw image, color image}. Then we can learn to translate A to B or B to A:
+
+Create folder /path/to/data with subfolders A and B. A and B should each have their own subfolders train, val, test, etc. In /path/to/data/A/train, put training images in style A. In /path/to/data/B/train, put the corresponding images in style B. Repeat same for other data splits (val, test, etc).
 ```bash
-bash ./datasets/download_pix2pix_dataset.sh facades
-```
+/path/to/data
+├── A                   
+│   ├── Train
+|        |__1.jpg
+|        |__2.jpg
+|        |__3.jpg
+|        ...                    
+│   ├── Val
+|        |__500.jpg
+|        |__501.jpg
+|        |__502.jpg
+|        ...
+│   └── Test  
+|        |__792.jpg
+|        |__793.jpg
+|        |__794.jpg
+|        ...
+|── B
+│   ├── Train
+|        |__1.jpg
+|        |__2.jpg
+|        |__3.jpg
+|        ...                    
+│   ├── Val
+|        |__500.jpg
+|        |__501.jpg
+|        |__502.jpg
+|        ...
+│   └── Test  
+|        |__792.jpg
+|        |__793.jpg
+|        |__794.jpg
+|        ...   
+|___
+
+Corresponding images in a pair {A,B} must be the same size and have the same filename, e.g., /path/to/data/A/train/1.jpg is considered to correspond to /path/to/data/B/train/1.jpg.
+
+Once the data is formatted this way, call:
+
+python datasets/combine_A_and_B.py --fold_A /path/to/data/A --fold_B /path/to/data/B --fold_AB /path/to/data
+This will combine each pair of images (A,B) into a single image file, ready for training.
+
+
+### pix2pix train/test
+
 - To view training results and loss plots, run `python -m visdom.server` and click the URL http://localhost:8097.
 - Train a model:
 ```bash
