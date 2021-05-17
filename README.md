@@ -58,12 +58,12 @@ Create folder /path/to/data with subfolders A and B. A and B should each have th
 |        |__794.jpg
 |        ...   
 |___
-
+```
 Corresponding images in a pair {A,B} must be the same size and have the same filename, e.g., /path/to/data/A/train/1.jpg is considered to correspond to /path/to/data/B/train/1.jpg.
 
 Once the data is formatted this way, call:
 
-python datasets/combine_A_and_B.py --fold_A /path/to/data/A --fold_B /path/to/data/B --fold_AB /path/to/data
+```bashpython datasets/combine_A_and_B.py --fold_A /path/to/data/A --fold_B /path/to/data/B --fold_AB /path/to/data```
 This will combine each pair of images (A,B) into a single image file, ready for training.
 
 
